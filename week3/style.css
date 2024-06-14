@@ -1,0 +1,49 @@
+.header {
+    height: 50px;
+    background-color: #3572EF;
+    border: 2px solid rgb(8, 3, 83);
+    border-radius: 10px ;
+    padding: 0;
+    margin: 0;
+}
+ul{
+    border-radius: 10px ;
+    background-color: #3572EF;
+    list-style-type: none;
+    overflow: hidden;
+    padding: 5px;
+    margin: 0;
+ }
+ 
+
+li{
+    float: left;
+}
+
+li a {
+    text-decoration: none;
+    color: azure;
+    display: inline-block;
+    text-align: center;
+    padding: 12px;
+    transition-duration: 1s;
+    
+ }
+
+ li a:hover {
+    color: rgb(0, 3, 3);
+    background-color: #A7E6FF;
+    border-radius: 5px;
+ }
+
+ .nav-end{
+    float: right;
+    
+ }
+
+ .active-link{
+     color: rgb(0, 3, 3);
+    background-color: #A7E6FF;
+    border-radius: 5px;
+ }
+ 

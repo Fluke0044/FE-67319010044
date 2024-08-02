@@ -1,0 +1,34 @@
+.form-1{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: rgba(7, 119, 255, 0.67);
+    width: 60%;
+    height:fit-content;
+    padding: 10px;
+    border-color: rgb(0, 0, 0);
+    border-style: double;
+    border-radius: 20px;
+    
+}
+.form-2{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: rgba(114, 238, 247, 0.865);
+    width: 20%;
+    height:30%;
+    padding: 10px;
+    border-color: rgb(5, 38, 253);
+    border-style: double;
+    border-radius: 20px;
+    
+}
+.p-1{
+    font-size: 25px;
+}
+input{
+    width: 40%;
+}

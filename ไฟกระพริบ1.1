@@ -1,0 +1,80 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+
+unsigned long previousMillis = 0;  // ตัวแปรเก็บเวลา
+const long interval = 500;  // เวลาหน่วง 500 มิลลิวินาที (0.5 วินาที)
+bool isBlinking = false;  // สถานะของการกระพริบ
+
+// WiFi Credentials
+const char* ssid = "vivo 1907";
+const char* password = "cover.19";
+
+// NETPIE Credentials
+const char* mqttServer = "broker.netpie.io";
+const char* mqttClientID = "ff292a58-4090-4ef0-a39a-c83938f67be2";
+const char* mqttUsername = "hBZ3on8ReFyXwabbQj5ZjREwQ5rXoCTK";
+const char* mqttPassword = "GcvLqNs3eyK1R7cmvEbi4Ebn65LATSSh";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// Pin Configuration
+const int digitalPin = 16; // GPIO4 = D2 on NodeMCU
+
+void setup() {
+  pinMode(digitalPin, OUTPUT); // Set GPIO4 as OUTPUT
+  digitalWrite(digitalPin, LOW); // Default OFF
+ 
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected");
+
+  client.setServer(mqttServer, 1883);
+  client.setCallback(callback);
+
+  while (!client.connected()) {
+    if (client.connect(mqttClientID, mqttUsername, mqttPassword)) {
+      Serial.println("Connected to NETPIE");
+      client.subscribe("@msg/TOGGLE"); // Subscribe to control topic
+    } else {
+      delay(3000);
+    }
+  }
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  String message = "";
+  for (int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  Serial.print("Message received: ");
+  Serial.println(message);
+
+  if (message == "ON") {
+    isBlinking = true;  // เริ่มกระพริบ
+  } else if (message == "OFF") {
+    isBlinking = false;  // หยุดกระพริบ
+    digitalWrite(digitalPin, HIGH);  // ปิดไฟ
+  }
+}
+
+void loop() {
+  client.loop();  // การเชื่อมต่อ MQTT
+
+  if (isBlinking) {
+    unsigned long currentMillis = millis();  // อ่านเวลาปัจจุบัน
+
+    if (currentMillis - previousMillis >= interval) {
+      // ถ้าผ่านไปครบเวลาที่กำหนดให้ทำการสลับสถานะไฟ
+      previousMillis = currentMillis;
+
+      // สลับการเปิด-ปิดไฟ
+      digitalWrite(digitalPin, !digitalRead(digitalPin));
+    }
+  }
+}
